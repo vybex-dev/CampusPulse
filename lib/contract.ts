@@ -426,7 +426,7 @@ export const ThresholdsSchema = z
     waste_min_checks_score: z.number().int().min(1).default(10),
     waste_min_checks_verify: z.number().int().min(1).default(20),
   })
-  .default(() => ({}));
+  .prefault({});
 
 export const SettingsObjectSchema = z
   .object({
@@ -434,7 +434,7 @@ export const SettingsObjectSchema = z
     water_inr_per_kl: z.number().positive().default(20),
     ef_grid_kg_per_kwh: z.number().min(0).default(0.72),
     ef_water_kg_per_kl: z.number().min(0).default(0.3),
-    waste_categories: categoryRecord(WasteCategoryRuleSchema).default(() => ({
+    waste_categories: categoryRecord(WasteCategoryRuleSchema).default({
       wet_biodegradable: {
         bin: "green",
         weight_kg: 0.15,
@@ -462,7 +462,7 @@ export const SettingsObjectSchema = z
         ef_kg_per_kg: 0,
         points: 5,
       },
-    })),
+    }),
     bins: z
       .object({
         green: z.object({ name: z.string().min(1), colour: z.string() }),
@@ -489,7 +489,7 @@ export const SettingsObjectSchema = z
     ai_provider_order: z
       .array(ProviderSchema)
       .min(1)
-      .default(() => ["groq", "gemini", "sample"]),
+      .default(["groq", "gemini", "sample"]),
   })
   .strict();
 
