@@ -2,8 +2,14 @@
  * SQLite handle for CampusPulse (better-sqlite3), kept on globalThis so hot reloads
  * in `next dev` never create a second connection.
  *
- * Schema changes: the database is generated, never versioned. Bump SCHEMA_VERSION and
+ * Schema changes: the database is generated, never versioned in code. Bump SCHEMA_VERSION and
  * run `npm run seed` (or POST /api/demo/reset) to rebuild it.
+ *
+ * ── Vercel / serverless ──
+ * The deployed bundle (/var/task) is read-only; only /tmp is writable (and it is ephemeral and
+ * per-instance). So on Vercel the runtime DB lives at /tmp/campuspulse.db and is copied once,
+ * on cold start, from the seeded DB bundled with the deployment (data/campuspulse.db).
+ * Locally nothing changes: the DB is ./data/campuspulse.db.
  *
  * ── node:sqlite fallback (if better-sqlite3 will not install on a laptop) ──
  * Everything outside this file uses only: db.exec(), db.prepare(sql).run/get/all(),
@@ -26,7 +32,14 @@ import path from "node:path";
 
 export type Db = Database.Database;
 
-export const DB_PATH = path.join(process.cwd(), "data", "campuspulse.db");
+const IS_VERCEL = Boolean(process.env.VERCEL);
+
+/** Seeded DB produced by `npm run seed`; bundled read-only with the deployment on Vercel. */
+export const SEED_DB_PATH = path.join(process.cwd(), "data", "campuspulse.db");
+
+/** Runtime DB: /tmp on Vercel (the only writable directory), ./data locally. */
+export const DB_PATH = IS_VERCEL ? "/tmp/campuspulse.db" : SEED_DB_PATH;
+
 export const SCHEMA_VERSION = 1;
 
 /** The 13 tables, in dependency order. */
@@ -207,13 +220,32 @@ CREATE TABLE IF NOT EXISTS setting (
 );
 `;
 
+/**
+ * On Vercel, copy the bundled seed DB into /tmp the first time this instance opens it.
+ * No-op locally, for ':memory:', and when the runtime DB already exists.
+ */
+function bootstrapFromSeed(file: string): void {
+  if (!IS_VERCEL || file !== DB_PATH || fs.existsSync(file)) return;
+  if (fs.existsSync(SEED_DB_PATH)) {
+    fs.copyFileSync(SEED_DB_PATH, file);
+  } else {
+    console.warn(
+      `db: seed database not found at ${SEED_DB_PATH}; starting with an empty schema. ` +
+        `Commit data/campuspulse.db and include it via outputFileTracingIncludes.`,
+    );
+  }
+}
+
 /** Open (or create) a database file, apply pragmas and the schema. Use ':memory:' in tests. */
 export function createDatabase(file: string): Db {
-  if (file !== ":memory:")
+  if (file !== ":memory:") {
     fs.mkdirSync(path.dirname(file), { recursive: true });
+    bootstrapFromSeed(file);
+  }
 
   const db = new Database(file);
-  db.pragma("journal_mode = WAL");
+  // WAL needs extra -wal/-shm files; DELETE mode is the safer choice on ephemeral serverless disk.
+  db.pragma(IS_VERCEL ? "journal_mode = DELETE" : "journal_mode = WAL");
   db.pragma("synchronous = NORMAL");
   db.pragma("foreign_keys = ON");
   db.pragma("busy_timeout = 5000");
@@ -233,7 +265,7 @@ export function createDatabase(file: string): Db {
 
 const g = globalThis as unknown as { __cpDb?: Db };
 
-/** The shared handle for the app (data/campuspulse.db). */
+/** The shared handle for the app (data/campuspulse.db locally, /tmp/campuspulse.db on Vercel). */
 export function getDb(): Db {
   if (!g.__cpDb || !g.__cpDb.open) g.__cpDb = createDatabase(DB_PATH);
   return g.__cpDb;
@@ -244,7 +276,11 @@ export function closeDb(): void {
   g.__cpDb = undefined;
 }
 
-/** Delete the database file and start from an empty schema. Destructive by design. */
+/**
+ * Delete the runtime database file and start again.
+ * Locally this wipes data/campuspulse.db (destructive by design; re-seed afterwards).
+ * On Vercel it only removes the /tmp copy, so the next open re-copies the bundled seed.
+ */
 export function resetDb(): Db {
   closeDb();
   for (const suffix of ["", "-wal", "-shm"])
