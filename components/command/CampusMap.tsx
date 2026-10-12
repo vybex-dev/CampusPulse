@@ -178,6 +178,11 @@ export function CampusMap({ blockSeverity, anomalies }: CampusMapProps) {
             >
               <circle cx="2" cy="2" r="1" fill="rgba(0,0,0,0.04)" />
             </pattern>
+            {BLOCKS_CONFIG.map((b) => (
+              <clipPath key={b.code} id={`block-clip-${b.code}`}>
+                <rect x={b.x} y={b.y} width={b.w} height={b.h} rx="18" />
+              </clipPath>
+            ))}
           </defs>
           <rect width="800" height="470" fill="url(#campus-grid)" rx="12" />
 
@@ -211,9 +216,9 @@ export function CampusMap({ blockSeverity, anomalies }: CampusMapProps) {
                     setSelectedBlock(b.code);
                   }
                 }}
-                className="cursor-pointer transition-transform duration-150 outline-none focus-visible:[&>rect:first-child]:stroke-brand focus-visible:[&>rect:first-child]:stroke-[3.5]"
+                className="cursor-pointer transition-transform duration-150 outline-none focus-visible:[&_.block-border]:stroke-brand focus-visible:[&_.block-border]:stroke-[3.5]"
               >
-                {/* Block Card Background */}
+                {/* Block card background (white) */}
                 <rect
                   x={b.x}
                   y={b.y}
@@ -221,26 +226,30 @@ export function CampusMap({ blockSeverity, anomalies }: CampusMapProps) {
                   height={b.h}
                   rx="18"
                   fill="#FFFFFF"
-                  stroke={styling.stroke}
-                  strokeWidth={isSelected ? 3 : 1.5}
                   filter="drop-shadow(0 2px 8px rgba(0,0,0,0.04))"
                 />
 
-                {/* Severity Soft Tint Header */}
+                {/* Severity tint header: ONE layer, clipped to the rounded card shape */}
                 <rect
                   x={b.x}
                   y={b.y}
                   width={b.w}
                   height={44}
-                  rx="18"
                   fill={styling.fill}
+                  clipPath={`url(#block-clip-${b.code})`}
                 />
+
+                {/* Border drawn last so the tint never covers it */}
                 <rect
+                  className="block-border"
                   x={b.x}
-                  y={b.y + 20}
+                  y={b.y}
                   width={b.w}
-                  height={24}
-                  fill={styling.fill}
+                  height={b.h}
+                  rx="18"
+                  fill="none"
+                  stroke={styling.stroke}
+                  strokeWidth={isSelected ? 3 : 1.5}
                 />
 
                 {/* Building Code Badge */}
@@ -310,8 +319,9 @@ export function CampusMap({ blockSeverity, anomalies }: CampusMapProps) {
                       : "0 issues detected"}
                   </text>
                   <text
-                    x={b.w - 50}
+                    x={b.w - 36 - 12}
                     y="20"
+                    textAnchor="end"
                     fontFamily="-apple-system, system-ui, sans-serif"
                     fontSize="11"
                     fontWeight="500"

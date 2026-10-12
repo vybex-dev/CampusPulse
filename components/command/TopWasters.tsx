@@ -69,70 +69,72 @@ export function TopWasters({ wasters = [], loading = false }: TopWastersProps) {
             return (
               <div
                 key={w.anomaly_id}
-                className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0"
+                className="flex items-start gap-3 py-4 first:pt-0 last:pb-0"
               >
-                {/* Index + Location */}
-                <div className="flex items-center gap-3">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-canvas text-caption font-semibold text-ink-secondary">
-                    {idx + 1}
-                  </span>
-                  <span
-                    className={cn(
-                      "flex h-8 w-8 items-center justify-center rounded-control",
-                      w.resource === "electricity" && "bg-res-electricity/10 text-res-electricity",
-                      w.resource === "water" && "bg-res-water/10 text-res-water",
-                      w.resource === "waste" && "bg-res-waste/10 text-res-waste",
-                    )}
-                  >
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <div className="flex flex-col">
-                    <span className="text-body font-medium text-ink">
-                      {w.location_name}
-                    </span>
-                    <span className="font-mono text-caption text-ink-secondary">
-                      {w.location_code}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Priority & Cost */}
-                <div className="flex items-center gap-3">
-                  <Pill
-                    tone={
-                      w.priority === "high"
-                        ? "red"
-                        : w.priority === "medium"
-                          ? "amber"
-                          : "green"
-                    }
-                  >
-                    {w.priority}
-                  </Pill>
-
-                  {w.avoidable_inr !== null ? (
-                    <div className="flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas px-2.5 py-1">
-                      <span className="text-caption font-semibold tabular-nums text-ink">
-                        ₹{w.avoidable_inr}
-                      </span>
-                      <TagPill tag="estimated" />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas px-2.5 py-1">
-                      <span className="text-caption text-ink-secondary">
-                        Misrouted
-                      </span>
-                      <TagPill tag="estimated" />
-                    </div>
+                {/* Rank + resource icon */}
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-canvas text-caption font-semibold text-ink-secondary">
+                  {idx + 1}
+                </span>
+                <span
+                  className={cn(
+                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-control",
+                    w.resource === "electricity" && "bg-res-electricity/10 text-res-electricity",
+                    w.resource === "water" && "bg-res-water/10 text-res-water",
+                    w.resource === "waste" && "bg-res-waste/10 text-res-waste",
                   )}
+                >
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
 
-                  <Link
-                    href={linkHref}
-                    className="text-ink-secondary hover:text-brand"
-                    aria-label={`View details for ${w.location_name}`}
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
+                {/* Two stacked lines so nothing is squeezed: name on top, badges below */}
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex min-w-0 flex-col">
+                      <span className="text-body font-medium leading-snug text-ink">
+                        {w.location_name}
+                      </span>
+                      <span className="font-mono text-caption text-ink-secondary">
+                        {w.location_code}
+                      </span>
+                    </div>
+                    <Link
+                      href={linkHref}
+                      className="mt-0.5 shrink-0 text-ink-secondary hover:text-brand"
+                      aria-label={`View details for ${w.location_name}`}
+                    >
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Pill
+                      tone={
+                        w.priority === "high"
+                          ? "red"
+                          : w.priority === "medium"
+                            ? "amber"
+                            : "green"
+                      }
+                    >
+                      {w.priority}
+                    </Pill>
+
+                    <div className="flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas py-1 pl-2.5 pr-1.5">
+                      <span
+                        className={cn(
+                          "text-caption tabular-nums",
+                          w.avoidable_inr !== null
+                            ? "font-semibold text-ink"
+                            : "text-ink-secondary",
+                        )}
+                      >
+                        {w.avoidable_inr !== null
+                          ? `₹${w.avoidable_inr}`
+                          : "Misrouted"}
+                      </span>
+                      <TagPill tag="estimated" />
+                    </div>
+                  </div>
                 </div>
               </div>
             );

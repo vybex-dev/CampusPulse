@@ -118,10 +118,10 @@ export function AlertFeed({
             return (
               <div
                 key={item.id}
-                className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 xl:flex-row xl:items-center xl:gap-6"
               >
                 {/* Left details */}
-                <div className="flex items-start gap-3.5">
+                <div className="flex min-w-0 flex-1 items-start gap-3.5">
                   <span
                     className={cn(
                       "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-control",
@@ -161,17 +161,17 @@ export function AlertFeed({
                 </div>
 
                 {/* Right cost chip & inspect link */}
-                <div className="flex shrink-0 items-center gap-3 pl-12 sm:pl-0">
+                <div className="flex shrink-0 items-center gap-2 pl-[3.125rem] xl:w-[16.5rem] xl:justify-end xl:pl-0">
                   {item.daily_cost_inr !== null ? (
-                    <div className="flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas px-3 py-1">
-                      <span className="text-caption font-semibold tabular-nums text-ink">
+                    <div className="flex min-w-0 items-center justify-between gap-2 rounded-pill border border-hairline bg-canvas py-1 pl-3 pr-1.5 xl:flex-1">
+                      <span className="whitespace-nowrap text-caption font-semibold tabular-nums text-ink">
                         ₹{item.daily_cost_inr}/day
                       </span>
                       <TagPill tag="estimated" />
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1.5 rounded-pill border border-hairline bg-canvas px-3 py-1">
-                      <span className="text-caption font-medium text-ink-secondary">
+                    <div className="flex min-w-0 items-center justify-between gap-2 rounded-pill border border-hairline bg-canvas py-1 pl-3 pr-1.5 xl:flex-1">
+                      <span className="whitespace-nowrap text-caption font-medium text-ink-secondary">
                         {item.excess.value} {item.excess.unit}
                       </span>
                       <TagPill tag="estimated" />
@@ -180,7 +180,7 @@ export function AlertFeed({
 
                   <Link
                     href={inspectHref}
-                    className="inline-flex h-8 items-center gap-1 rounded-control px-3 text-caption font-medium text-brand hover:bg-brand-tint"
+                    className="inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-control px-3 text-caption font-medium text-brand hover:bg-brand-tint"
                   >
                     <span>Inspect</span>
                     <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
