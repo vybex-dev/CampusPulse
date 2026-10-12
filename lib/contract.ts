@@ -403,30 +403,34 @@ export const WasteCategoryRuleSchema = z.object({
 });
 export type WasteCategoryRule = z.infer<typeof WasteCategoryRuleSchema>;
 
-export const ThresholdsSchema = z
-  .object({
-    elec_min_excess_kw: z.number().positive().default(0.4),
-    elec_sigma_multiplier: z.number().positive().default(4),
-    elec_min_run_hours_r1: z.number().int().min(1).default(2),
-    elec_min_run_hours_r2: z.number().int().min(1).default(3),
-    elec_band_min_tolerance_pct: z.number().positive().default(0.25),
-    elec_band_sigma_multiplier: z.number().positive().default(3),
-    elec_gap_tolerance_hours: z.number().int().min(0).default(1),
-    merge_window_days: z.number().int().min(1).default(14),
-    active_window_hours: z.number().int().min(1).default(48),
-    water_leak_min_excess_lph: z.number().positive().default(300),
-    water_leak_sigma_multiplier: z.number().positive().default(3),
-    water_leak_min_nights: z.number().int().min(1).default(2),
-    water_overflow_tank_pct: z.number().min(0).max(100).default(99.5),
-    water_overflow_min_excess_lph: z.number().positive().default(1000),
-    water_percapita_flag_ratio: z.number().positive().default(1.2),
-    waste_flag_accuracy: z.number().min(0).max(1).default(0.6),
-    waste_high_below_accuracy: z.number().min(0).max(1).default(0.5),
-    waste_min_checks_flag: z.number().int().min(1).default(20),
-    waste_min_checks_score: z.number().int().min(1).default(10),
-    waste_min_checks_verify: z.number().int().min(1).default(20),
-  })
-  .prefault({});
+// Defaults are parsed once up front so this behaves the same on zod 3 and zod 4
+// (v4's .default() does not run its value through the schema; .prefault() is v4-only).
+const ThresholdsBaseSchema = z.object({
+  elec_min_excess_kw: z.number().positive().default(0.4),
+  elec_sigma_multiplier: z.number().positive().default(4),
+  elec_min_run_hours_r1: z.number().int().min(1).default(2),
+  elec_min_run_hours_r2: z.number().int().min(1).default(3),
+  elec_band_min_tolerance_pct: z.number().positive().default(0.25),
+  elec_band_sigma_multiplier: z.number().positive().default(3),
+  elec_gap_tolerance_hours: z.number().int().min(0).default(1),
+  merge_window_days: z.number().int().min(1).default(14),
+  active_window_hours: z.number().int().min(1).default(48),
+  water_leak_min_excess_lph: z.number().positive().default(300),
+  water_leak_sigma_multiplier: z.number().positive().default(3),
+  water_leak_min_nights: z.number().int().min(1).default(2),
+  water_overflow_tank_pct: z.number().min(0).max(100).default(99.5),
+  water_overflow_min_excess_lph: z.number().positive().default(1000),
+  water_percapita_flag_ratio: z.number().positive().default(1.2),
+  waste_flag_accuracy: z.number().min(0).max(1).default(0.6),
+  waste_high_below_accuracy: z.number().min(0).max(1).default(0.5),
+  waste_min_checks_flag: z.number().int().min(1).default(20),
+  waste_min_checks_score: z.number().int().min(1).default(10),
+  waste_min_checks_verify: z.number().int().min(1).default(20),
+});
+
+export const ThresholdsSchema = ThresholdsBaseSchema.default(
+  ThresholdsBaseSchema.parse({}),
+);
 
 export const SettingsObjectSchema = z
   .object({
