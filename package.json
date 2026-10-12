@@ -10,7 +10,8 @@
     "test": "vitest run",
     "seed": "tsx scripts/seed.ts",
     "calibrate": "tsx scripts/calibrate.ts",
-    "eval:waste": "tsx scripts/eval-waste.ts"
+    "eval:waste": "tsx scripts/eval-waste.ts",
+    "rehearse": "tsx scripts/rehearse.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.1.0",

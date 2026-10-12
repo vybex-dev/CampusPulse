@@ -42,7 +42,7 @@ interface RehearsalResult {
 const results: RehearsalResult[] = [];
 
 function makeReq(url: string, init?: RequestInit): NextRequest {
-  return new NextRequest(new URL(url, "http://localhost:3000"), init);
+  return new NextRequest(new URL(url, "http://localhost:3000"), init as any);
 }
 
 function formatDuration(ms: number): string {
@@ -150,7 +150,7 @@ async function main() {
     const ticket = await res.json();
     createdTicketId = ticket.id;
 
-    const ok = [200, 201].toContain(res.status) && ticket.status === "open";
+    const ok = [200, 201].includes(res.status) && ticket.status === "open";
     return {
       passed: ok,
       details: `Created Ticket #${ticket.id}: "${ticket.title}" (${ticket.team})`,
