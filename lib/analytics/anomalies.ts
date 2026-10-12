@@ -52,6 +52,7 @@ export interface DetectorContext {
   timetable: TimetableSlotItem[] | Map<string, boolean[]>;
   clock: string; // ISO 8601 simulated time e.g. "2026-10-12T00:00"
   settings?: Settings;
+  wasteLogs?: unknown[];
 }
 
 export interface AnomalyDraft {
