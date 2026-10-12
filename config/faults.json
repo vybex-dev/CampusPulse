@@ -1,0 +1,204 @@
+{
+  "notes": [
+    "faults = the six planted stories (ST-1 to ST-6). diffuse = background noise tuned by npm run calibrate (calibrated=false until then).",
+    "A fault with fixed_at set stops applying from that moment. Resolving a ticket sets fixed_at on its fault.",
+    "'expected' holds the golden figures from the PRD story table, for tests. All figures are simulated."
+  ],
+  "faults": [
+    {
+      "story_code": "ST-1",
+      "kind": "elec_hold",
+      "meter_id": "E-A-204",
+      "start_ts": "2026-10-05T19:00",
+      "active": true,
+      "fixed_at": null,
+      "params": {
+        "dates": [
+          "2026-10-05",
+          "2026-10-06",
+          "2026-10-08",
+          "2026-10-09",
+          "2026-10-10"
+        ],
+        "hours": [19, 20, 21, 22],
+        "level_kw": 3.4
+      },
+      "expected": {
+        "excess_kwh_per_evening": 13.4,
+        "inr_per_evening": 107,
+        "daily_cost_inr": 76,
+        "priority": "medium",
+        "saved_inr_after_fix": 535
+      }
+    },
+    {
+      "story_code": "ST-2",
+      "kind": "elec_hold",
+      "meter_id": "E-A-L3",
+      "start_ts": "2026-10-03T00:00",
+      "active": true,
+      "fixed_at": null,
+      "params": {
+        "dates": ["2026-10-03", "2026-10-04", "2026-10-10", "2026-10-11"],
+        "hours": [
+          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23
+        ],
+        "level_kw": 3.6
+      },
+      "expected": {
+        "excess_kwh_per_weekend": 160,
+        "daily_cost_inr": 186,
+        "priority": "medium"
+      }
+    },
+    {
+      "story_code": "ST-3",
+      "kind": "water_const_leak",
+      "meter_id": "W-HST-1",
+      "start_ts": "2026-10-06T00:00",
+      "active": true,
+      "fixed_at": null,
+      "params": { "extra_lph": 800 },
+      "expected": {
+        "night_flow_lph": 920,
+        "loss_kl_per_day": 19.2,
+        "daily_cost_inr": 384,
+        "priority": "high",
+        "per_capita_l_per_day": 152,
+        "pct_of_target": 127
+      }
+    },
+    {
+      "story_code": "ST-4",
+      "kind": "water_tank_overflow",
+      "meter_id": "T-AB-B",
+      "start_ts": "2026-10-07T05:00",
+      "active": true,
+      "fixed_at": null,
+      "params": {
+        "inflow_meter_id": "W-AB-B",
+        "dates": [
+          "2026-10-07",
+          "2026-10-08",
+          "2026-10-09",
+          "2026-10-10",
+          "2026-10-11"
+        ],
+        "hours": [5, 6],
+        "extra_lph": 1500
+      },
+      "expected": {
+        "kl_per_morning": 3,
+        "daily_cost_inr": 43,
+        "priority": "low"
+      }
+    },
+    {
+      "story_code": "ST-5",
+      "kind": "waste_bad_segregation",
+      "meter_id": null,
+      "start_ts": "2026-10-05T00:00",
+      "active": true,
+      "fixed_at": null,
+      "params": {
+        "block": "MESS",
+        "end_ts": "2026-10-11T23:00",
+        "checks": 60,
+        "p_correct": 0.46,
+        "p_correct_after_fix": 0.78,
+        "commonest_mistake": {
+          "category": "wet_biodegradable",
+          "chosen_bin": "blue"
+        }
+      },
+      "expected": {
+        "accuracy_pct": 46,
+        "misrouted_kg_per_week": 60,
+        "priority": "high"
+      }
+    },
+    {
+      "story_code": "ST-6",
+      "kind": "elec_afterhours_excess",
+      "meter_id": null,
+      "start_ts": "2026-09-12T00:00",
+      "active": false,
+      "fixed_at": "2026-09-30T00:00",
+      "params": {
+        "block": "AB-B",
+        "meter_ids": [
+          "E-B-101",
+          "E-B-102",
+          "E-B-103",
+          "E-B-104",
+          "E-B-L1",
+          "E-B-201",
+          "E-B-202",
+          "E-B-203",
+          "E-B-L2",
+          "E-B-301",
+          "E-B-302",
+          "E-B-303",
+          "E-B-L3",
+          "E-B-L4"
+        ],
+        "extra_kw_total": 4.04,
+        "hours": [19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "expected": {
+        "saved_kwh": 396,
+        "saved_inr": 3168,
+        "saved_co2e_kg": 285,
+        "after_hours_reduction_pct": 38
+      },
+      "preseed": {
+        "ticket": {
+          "title": "Block B after-hours HVAC schedule",
+          "team": "electrical",
+          "priority": "high",
+          "created_at": "2026-09-29T10:00",
+          "resolved_at": "2026-09-30T00:00",
+          "verified_at": "2026-10-07T00:00",
+          "resolve_note": "HVAC schedule corrected for Block B."
+        },
+        "savings": {
+          "window_start": "2026-09-30T00:00",
+          "window_end": "2026-10-07T00:00",
+          "expected_units": 1042,
+          "actual_units": 646,
+          "saved_units": 396,
+          "saved_inr": 3168,
+          "saved_co2e_kg": 285.12
+        }
+      }
+    }
+  ],
+  "diffuse": [
+    {
+      "kind": "diffuse_elec",
+      "blocks": ["AB-A", "AB-B", "LIB"],
+      "rate_per_meter_night": 0.03,
+      "kw_range": [0.3, 0.9],
+      "hours_range": [3, 8],
+      "calibrated": false,
+      "note": "Fans and lights left on overnight. Rate is tuned by npm run calibrate to hit about 4.5% avoidable electricity."
+    },
+    {
+      "kind": "diffuse_leak",
+      "meter_id": "W-AB-A",
+      "extra_lph": 110,
+      "start_ts": "2026-09-20T00:00",
+      "calibrated": false,
+      "note": "Small leak, 100 to 150 L/h."
+    },
+    {
+      "kind": "diffuse_leak",
+      "meter_id": "W-HST-2",
+      "extra_lph": 140,
+      "start_ts": "2026-09-25T00:00",
+      "calibrated": false,
+      "note": "Small leak, 100 to 150 L/h."
+    }
+  ]
+}

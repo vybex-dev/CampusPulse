@@ -1,0 +1,375 @@
+{
+  "notes": [
+    "Fictional campus. All figures are simulated and calibrated to look realistic.",
+    "Weekdays are numbered 0 = Monday ... 6 = Sunday. Hour ranges [a, b] are half-open: hours a..b-1.",
+    "Electricity meters: one per room entry plus one per floor entry with meter=true; id = 'E-' + code.",
+    "Water meters: one per block, id = 'W-' + block code. Tank sensors: id = 'T-' + block code.",
+    "Rooms without a name are called 'Room <code>' (classroom) or 'Lab <code>' (lab).",
+    "Assumptions to replace with real data: weekly bin mass, bin checks per week, tank capacities, mess meal-peak windows, category mixes."
+  ],
+  "model": {
+    "history_start": "2026-09-12T00:00",
+    "history_days": 30,
+    "clock_start": "2026-10-12T00:00",
+    "noise_sd": 0.08,
+    "temperature_amplitude": 0.15
+  },
+  "campus": {
+    "code": "CAMPUS",
+    "name": "Demo University Campus (fictional)",
+    "students_daily": 3500,
+    "staff": 220,
+    "hostel_residents": 1100
+  },
+  "teaching_week": {
+    "weekday": { "start": 9, "end": 17, "lunch_start": 13, "lunch_end": 14 },
+    "saturday": { "start": 9, "end": 13 },
+    "sunday_closed": true
+  },
+  "room_types": {
+    "classroom": {
+      "occupied_kw": 1.8,
+      "standby_kw": 0.05,
+      "schedule": {
+        "mode": "random",
+        "weekday_prob": 0.7,
+        "saturday_prob": 0.5
+      }
+    },
+    "lab": {
+      "occupied_kw": 3.0,
+      "standby_kw": 0.2,
+      "schedule": {
+        "mode": "random",
+        "weekday_prob": 0.5,
+        "saturday_prob": 0.5
+      }
+    },
+    "library_room": {
+      "occupied_kw": 1.2,
+      "standby_kw": 0.1,
+      "schedule": {
+        "mode": "fixed",
+        "start": 9,
+        "end": 19,
+        "days": [0, 1, 2, 3, 4, 5]
+      }
+    },
+    "office": {
+      "occupied_kw": 1.2,
+      "standby_kw": 0.1,
+      "schedule": {
+        "mode": "fixed",
+        "start": 9,
+        "end": 19,
+        "days": [0, 1, 2, 3, 4, 5]
+      }
+    }
+  },
+  "curves": {
+    "hostel_floor": {
+      "baseline_kw": 6,
+      "peak_kw": 18,
+      "peak_hours": [
+        [6, 8],
+        [18, 23]
+      ]
+    },
+    "mess": {
+      "base_kw": 4,
+      "peak_kw": 20,
+      "peak_hours": [
+        [6, 9],
+        [11, 14],
+        [17, 21]
+      ]
+    }
+  },
+  "water": {
+    "hostel": {
+      "litres_per_resident_per_day": 120,
+      "peak_hours": [
+        [5, 8],
+        [18, 21]
+      ]
+    },
+    "academic": { "litres_per_user_per_day": 20, "use_hours": [9, 17] },
+    "mess": {
+      "litres_per_meal": 10,
+      "peak_hours": [
+        [7, 9],
+        [12, 14],
+        [19, 21]
+      ]
+    }
+  },
+  "waste": {
+    "peer_p_correct": 0.78,
+    "category_mix": {
+      "wet_biodegradable": 0.35,
+      "paper_cardboard": 0.2,
+      "plastic": 0.2,
+      "metal_glass": 0.08,
+      "e_waste": 0.03,
+      "hazardous": 0.02,
+      "other_residual": 0.12
+    },
+    "category_mix_overrides": {
+      "MESS": {
+        "wet_biodegradable": 0.7,
+        "paper_cardboard": 0.08,
+        "plastic": 0.1,
+        "metal_glass": 0.03,
+        "e_waste": 0,
+        "hazardous": 0,
+        "other_residual": 0.09
+      }
+    }
+  },
+  "blocks": [
+    {
+      "code": "AB-A",
+      "name": "Academic Block A (Engineering)",
+      "type": "academic",
+      "population": { "count": 1800, "unit": "daily_users" },
+      "per_capita_target_l": 20,
+      "weekly_bin_mass_kg": 260,
+      "bin_checks_per_week": 52,
+      "water": { "baseline_night_lph": 70 },
+      "tank": null,
+      "floors": [
+        { "level": 1, "code": "A-F1" },
+        { "level": 2, "code": "A-F2" },
+        { "level": 3, "code": "A-F3" }
+      ],
+      "rooms": [
+        { "code": "A-101", "floor": 1, "type": "classroom" },
+        { "code": "A-102", "floor": 1, "type": "classroom" },
+        { "code": "A-103", "floor": 1, "type": "classroom" },
+        { "code": "A-104", "floor": 1, "type": "classroom" },
+        { "code": "A-105", "floor": 1, "type": "classroom" },
+        { "code": "A-L1", "floor": 1, "type": "lab" },
+        { "code": "A-L2", "floor": 1, "type": "lab" },
+        { "code": "A-201", "floor": 2, "type": "classroom" },
+        { "code": "A-202", "floor": 2, "type": "classroom" },
+        { "code": "A-203", "floor": 2, "type": "classroom" },
+        {
+          "code": "A-204",
+          "name": "Hall A-204",
+          "floor": 2,
+          "type": "classroom",
+          "occupied_kw": 3.4
+        },
+        { "code": "A-205", "floor": 2, "type": "classroom" },
+        {
+          "code": "A-L3",
+          "name": "Lab A-L3",
+          "floor": 2,
+          "type": "lab",
+          "occupied_kw": 3.6,
+          "pcs": 40
+        },
+        { "code": "A-L4", "floor": 2, "type": "lab" },
+        { "code": "A-301", "floor": 3, "type": "classroom" },
+        { "code": "A-302", "floor": 3, "type": "classroom" },
+        { "code": "A-303", "floor": 3, "type": "classroom" },
+        { "code": "A-304", "floor": 3, "type": "classroom" },
+        { "code": "A-L5", "floor": 3, "type": "lab" },
+        { "code": "A-L6", "floor": 3, "type": "lab" }
+      ]
+    },
+    {
+      "code": "AB-B",
+      "name": "Academic Block B (Management and Sciences)",
+      "type": "academic",
+      "population": { "count": 1200, "unit": "daily_users" },
+      "per_capita_target_l": 20,
+      "weekly_bin_mass_kg": 180,
+      "bin_checks_per_week": 52,
+      "water": { "baseline_night_lph": 60 },
+      "tank": { "capacity_kl": 15, "kind": "rooftop" },
+      "floors": [
+        { "level": 1, "code": "B-F1" },
+        { "level": 2, "code": "B-F2" },
+        { "level": 3, "code": "B-F3" }
+      ],
+      "rooms": [
+        { "code": "B-101", "floor": 1, "type": "classroom" },
+        { "code": "B-102", "floor": 1, "type": "classroom" },
+        { "code": "B-103", "floor": 1, "type": "classroom" },
+        { "code": "B-104", "floor": 1, "type": "classroom" },
+        { "code": "B-L1", "floor": 1, "type": "lab" },
+        { "code": "B-201", "floor": 2, "type": "classroom" },
+        { "code": "B-202", "floor": 2, "type": "classroom" },
+        { "code": "B-203", "floor": 2, "type": "classroom" },
+        { "code": "B-L2", "floor": 2, "type": "lab" },
+        { "code": "B-301", "floor": 3, "type": "classroom" },
+        { "code": "B-302", "floor": 3, "type": "classroom" },
+        { "code": "B-303", "floor": 3, "type": "classroom" },
+        { "code": "B-L3", "floor": 3, "type": "lab" },
+        { "code": "B-L4", "floor": 3, "type": "lab" }
+      ]
+    },
+    {
+      "code": "LIB",
+      "name": "Library and Admin",
+      "type": "library_admin",
+      "population": { "count": 500, "unit": "daily_users" },
+      "per_capita_target_l": 20,
+      "weekly_bin_mass_kg": 70,
+      "bin_checks_per_week": 52,
+      "water": { "baseline_night_lph": 40 },
+      "tank": null,
+      "floors": [
+        { "level": 1, "code": "LIB-F1" },
+        { "level": 2, "code": "LIB-F2" }
+      ],
+      "rooms": [
+        {
+          "code": "LIB-101",
+          "name": "Reading Hall",
+          "floor": 1,
+          "type": "library_room"
+        },
+        {
+          "code": "LIB-102",
+          "name": "Periodicals Room",
+          "floor": 1,
+          "type": "library_room"
+        },
+        {
+          "code": "LIB-103",
+          "name": "Reference Section",
+          "floor": 1,
+          "type": "library_room"
+        },
+        {
+          "code": "LIB-104",
+          "name": "Digital Library",
+          "floor": 1,
+          "type": "library_room"
+        },
+        {
+          "code": "LIB-201",
+          "name": "Admin Office",
+          "floor": 2,
+          "type": "office"
+        },
+        {
+          "code": "LIB-202",
+          "name": "Accounts Office",
+          "floor": 2,
+          "type": "office"
+        },
+        {
+          "code": "LIB-203",
+          "name": "Examination Cell",
+          "floor": 2,
+          "type": "office"
+        },
+        {
+          "code": "LIB-204",
+          "name": "Conference Room",
+          "floor": 2,
+          "type": "office"
+        }
+      ]
+    },
+    {
+      "code": "HST-1",
+      "name": "Boys Hostel 1",
+      "type": "hostel",
+      "population": { "count": 600, "unit": "residents" },
+      "per_capita_target_l": 120,
+      "weekly_bin_mass_kg": 210,
+      "bin_checks_per_week": 52,
+      "water": { "baseline_night_lph": 120 },
+      "tank": { "capacity_kl": 30, "kind": "overhead" },
+      "floors": [
+        {
+          "level": 1,
+          "code": "HST1-F1",
+          "room_type": "hostel_floor",
+          "meter": true
+        },
+        {
+          "level": 2,
+          "code": "HST1-F2",
+          "room_type": "hostel_floor",
+          "meter": true
+        },
+        {
+          "level": 3,
+          "code": "HST1-F3",
+          "room_type": "hostel_floor",
+          "meter": true
+        },
+        {
+          "level": 4,
+          "code": "HST1-F4",
+          "room_type": "hostel_floor",
+          "meter": true
+        }
+      ],
+      "rooms": []
+    },
+    {
+      "code": "HST-2",
+      "name": "Girls Hostel",
+      "type": "hostel",
+      "population": { "count": 500, "unit": "residents" },
+      "per_capita_target_l": 120,
+      "weekly_bin_mass_kg": 175,
+      "bin_checks_per_week": 52,
+      "water": { "baseline_night_lph": 80 },
+      "tank": null,
+      "floors": [
+        {
+          "level": 1,
+          "code": "HST2-F1",
+          "room_type": "hostel_floor",
+          "meter": true
+        },
+        {
+          "level": 2,
+          "code": "HST2-F2",
+          "room_type": "hostel_floor",
+          "meter": true
+        },
+        {
+          "level": 3,
+          "code": "HST2-F3",
+          "room_type": "hostel_floor",
+          "meter": true
+        },
+        {
+          "level": 4,
+          "code": "HST2-F4",
+          "room_type": "hostel_floor",
+          "meter": true
+        }
+      ],
+      "rooms": []
+    },
+    {
+      "code": "MESS",
+      "name": "Mess and Canteen",
+      "type": "mess",
+      "population": { "count": 1600, "unit": "meals" },
+      "per_capita_target_l": 10,
+      "weekly_bin_mass_kg": 190,
+      "bin_checks_per_week": 60,
+      "water": { "baseline_night_lph": 50 },
+      "tank": null,
+      "floors": [{ "level": 1, "code": "MESS-F1" }],
+      "rooms": [
+        {
+          "code": "MESS1",
+          "name": "Mess and Canteen kitchen",
+          "floor": 1,
+          "type": "mess"
+        }
+      ]
+    }
+  ]
+}
