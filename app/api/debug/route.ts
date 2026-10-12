@@ -1,11 +1,9 @@
 /**
  * TEMPORARY diagnostic route. Place at: app/api/debug/route.ts
  *
- * Each step runs in its own request so a hard crash in one step cannot hide the others:
- *   /api/debug              -> step=basic   (no native modules, no app code)
- *   /api/debug?step=sqlite  -> loads better-sqlite3 and opens an in-memory DB
- *   /api/debug?step=db      -> opens the app's real DB via lib/db
- *   /api/debug?step=config  -> reads config/*.json via lib/config
+ *   /api/debug?step=basic|sqlite|db|config           environment checks
+ *   /api/debug?step=route&name=summary               calls the real handler and reports
+ *   names: summary | anomalies | whatif | report | percapita
  *
  * DELETE this file once everything works.
  */
@@ -16,6 +14,8 @@ import path from "node:path";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+type Handler = (req: Request) => Promise<Response>;
+
 function fileInfo(p: string) {
   try {
     const s = fs.statSync(p);
@@ -25,21 +25,41 @@ function fileInfo(p: string) {
   }
 }
 
-function listDir(p: string) {
-  try {
-    return fs.readdirSync(p).slice(0, 30);
-  } catch (e) {
-    return `ERR: ${(e as Error).message}`;
+function errText(e: unknown) {
+  const err = e as Error;
+  return `${err?.name}: ${err?.message}\n${(err?.stack ?? "").split("\n").slice(0, 12).join("\n")}`;
+}
+
+async function loadHandler(name: string): Promise<{ handler: Handler; url: string }> {
+  switch (name) {
+    case "summary": {
+      const m = (await import("@/app/api/summary/route")) as unknown as { GET: Handler };
+      return { handler: m.GET, url: "/api/summary?range=7&resource=all" };
+    }
+    case "anomalies": {
+      const m = (await import("@/app/api/anomalies/route")) as unknown as { GET: Handler };
+      return { handler: m.GET, url: "/api/anomalies" };
+    }
+    case "whatif": {
+      const m = (await import("@/app/api/whatif/snapshot/route")) as unknown as { GET: Handler };
+      return { handler: m.GET, url: "/api/whatif/snapshot" };
+    }
+    case "report": {
+      const m = (await import("@/app/api/report/route")) as unknown as { GET: Handler };
+      return { handler: m.GET, url: "/api/report?period=7" };
+    }
+    case "percapita": {
+      const m = (await import("@/app/api/water/percapita/route")) as unknown as { GET: Handler };
+      return { handler: m.GET, url: "/api/water/percapita" };
+    }
+    default:
+      throw new Error(`unknown route name "${name}"`);
   }
 }
 
-function errText(e: unknown) {
-  const err = e as Error;
-  return `${err?.name}: ${err?.message}\n${(err?.stack ?? "").split("\n").slice(0, 8).join("\n")}`;
-}
-
 export async function GET(req: Request) {
-  const step = new URL(req.url).searchParams.get("step") ?? "basic";
+  const params = new URL(req.url).searchParams;
+  const step = params.get("step") ?? "basic";
   const cwd = process.cwd();
   const out: Record<string, unknown> = { step };
 
@@ -47,30 +67,11 @@ export async function GET(req: Request) {
     Object.assign(out, {
       vercel: process.env.VERCEL ?? null,
       node: process.version,
-      platform: process.platform,
-      arch: process.arch,
       cwd,
       seedDb: fileInfo(path.join(cwd, "data", "campuspulse.db")),
       tmpDb: fileInfo("/tmp/campuspulse.db"),
-      dataDir: listDir(path.join(cwd, "data")),
-      configDir: listDir(path.join(cwd, "config")),
-      sqliteBinding: fileInfo(
-        path.join(
-          cwd,
-          "node_modules",
-          "better-sqlite3",
-          "build",
-          "Release",
-          "better_sqlite3.node",
-        ),
-      ),
+      memoryMB: Math.round(process.memoryUsage().rss / 1048576),
     });
-    try {
-      fs.writeFileSync("/tmp/_probe.txt", "ok");
-      out.tmpWritable = true;
-    } catch (e) {
-      out.tmpWritable = errText(e);
-    }
   }
 
   if (step === "sqlite") {
@@ -104,6 +105,25 @@ export async function GET(req: Request) {
     } catch (e) {
       out.configError = errText(e);
     }
+  }
+
+  if (step === "route") {
+    const name = params.get("name") ?? "";
+    const started = Date.now();
+    try {
+      const { handler, url } = await loadHandler(name);
+      out.loadedMs = Date.now() - started;
+      const origin = new URL(req.url).origin;
+      const res = await handler(
+        new Request(origin + url, { headers: { "X-Role": "admin" } }),
+      );
+      out.status = res.status;
+      out.body = (await res.text()).slice(0, 1500);
+    } catch (e) {
+      out.thrown = errText(e);
+    }
+    out.totalMs = Date.now() - started;
+    out.memoryMB = Math.round(process.memoryUsage().rss / 1048576);
   }
 
   return NextResponse.json(out, { status: 200 });
