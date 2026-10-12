@@ -89,6 +89,19 @@ export function updateSettings(
   }, db);
 }
 
+/**
+ * Restores user settings to DEFAULT_SETTINGS by removing all schema keys from `setting` table,
+ * preserving internal simulator keys (sim_clock, sim_seed).
+ */
+export function resetSettings(db: Db = getDb()): Settings {
+  return tx((d) => {
+    d.prepare(
+      "DELETE FROM setting WHERE key NOT IN (?, ?)",
+    ).run(SIM_CLOCK_KEY, SIM_SEED_KEY);
+    return DEFAULT_SETTINGS;
+  }, db);
+}
+
 export function getRawSetting(key: string, db: Db = getDb()): string | null {
   const row = db.prepare("SELECT value FROM setting WHERE key = ?").get(key) as
     | { value: string }

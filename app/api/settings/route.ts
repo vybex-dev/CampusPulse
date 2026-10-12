@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSettings, updateSettings } from "@/lib/settings";
+import { getSettings, updateSettings, resetSettings } from "@/lib/settings";
 import { invalidateCache } from "@/lib/cache";
 import { jsonError } from "@/lib/http";
 import { ZodError } from "zod";
@@ -24,6 +24,12 @@ export async function PUT(req: NextRequest) {
       return jsonError(400, "BAD_REQUEST", "Body must be a valid JSON object");
     }
 
+    if (body.reset === true) {
+      const reset = resetSettings();
+      invalidateCache();
+      return NextResponse.json(reset);
+    }
+
     const updated = updateSettings(body);
     invalidateCache();
     return NextResponse.json(updated);
@@ -33,5 +39,16 @@ export async function PUT(req: NextRequest) {
     }
     console.error("[PUT /api/settings]", err);
     return jsonError(500, "INTERNAL_ERROR", "Failed to update settings");
+  }
+}
+
+export async function DELETE() {
+  try {
+    const reset = resetSettings();
+    invalidateCache();
+    return NextResponse.json(reset);
+  } catch (err) {
+    console.error("[DELETE /api/settings]", err);
+    return jsonError(500, "INTERNAL_ERROR", "Failed to reset settings");
   }
 }

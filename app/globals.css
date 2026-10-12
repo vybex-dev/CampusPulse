@@ -33,4 +33,34 @@
       scroll-behavior: auto !important;
     }
   }
+
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
+
+    header,
+    aside,
+    .no-print,
+    [data-print-hide] {
+      display: none !important;
+    }
+
+    main {
+      padding-left: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    .print-page {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .print-section {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+  }
 }

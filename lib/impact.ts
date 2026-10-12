@@ -38,41 +38,8 @@ import { syncAndGetAnomalies } from "./analytics/tickets";
 import { computePooledCampusAccuracy } from "./analytics/waste";
 import { getCachedOrCompute } from "./cache";
 
-/**
- * Shared pure calculation of CampusPulse score from shares.
- * aE: avoidable electricity fraction (0..1)
- * aW: avoidable water fraction (0..1)
- * A: campus segregation accuracy percentage (0..100)
- */
-export function scoreFromShares(
-  aE: number,
-  aW: number,
-  A: number,
-  ceilingE = 0.10,
-  ceilingW = 0.20,
-): {
-  total: number;
-  electricity: number;
-  water: number;
-  waste: number;
-} {
-  const clampAE = Math.max(0, aE);
-  const clampAW = Math.max(0, aW);
-  const clampA = Math.min(100, Math.max(0, A));
-
-  const sE = 100 * (1 - Math.min(1, clampAE / ceilingE));
-  const sW = 100 * (1 - Math.min(1, clampAW / ceilingW));
-  const sWaste = clampA;
-
-  const total = (sE + sW + sWaste) / 3;
-
-  return {
-    electricity: Number(sE.toFixed(1)),
-    water: Number(sW.toFixed(1)),
-    waste: Number(sWaste.toFixed(1)),
-    total: Number(total.toFixed(1)),
-  };
-}
+import { scoreFromShares } from "./score";
+export { scoreFromShares };
 
 /**
  * Calculates trailing 7-day Score conforming to ScoreSchema.
@@ -396,9 +363,15 @@ export function buildImpactReport(
     const settings = getSettings(db);
 
     const clockMs = new Date(`${clock}:00Z`).getTime();
-    const days = period === "7" ? 7 : period === "30" ? 30 : 30;
-    const startMs = clockMs - days * 86400000;
-    const startTs = new Date(startMs).toISOString().slice(0, 16);
+    let startTs: string;
+    if (period === "all") {
+      const minRow = db.prepare("SELECT MIN(ts) as min_ts FROM reading").get() as { min_ts: string | null };
+      startTs = minRow?.min_ts ?? "2026-09-12T00:00";
+    } else {
+      const days = period === "7" ? 7 : 30;
+      const startMs = clockMs - days * 86400000;
+      startTs = new Date(startMs).toISOString().slice(0, 16);
+    }
 
     const score = computeCampusScore(db, clock);
     const anomalies = syncAndGetAnomalies(db);

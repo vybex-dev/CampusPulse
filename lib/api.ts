@@ -9,7 +9,12 @@ import type {
   TicketDetail,
   Range,
   ResourceTab,
+  WhatIfSnapshot,
+  Report,
+  ReportPeriod,
+  Settings,
 } from "@/lib/contract";
+import type { SettingsPatch } from "@/lib/settings";
 import {
   MOCK_SUMMARY,
   MOCK_ANOMALIES,
@@ -395,6 +400,112 @@ export function useUpdateTicket() {
       void queryClient.invalidateQueries({ queryKey: ["ticket", data.id] });
       void queryClient.invalidateQueries({ queryKey: ["anomalies"] });
       void queryClient.invalidateQueries({ queryKey: ["summary"] });
+    },
+  });
+}
+
+export function useWhatIfSnapshot() {
+  return useQuery<WhatIfSnapshot>({
+    queryKey: ["whatif", "snapshot"],
+    queryFn: async () => {
+      return await apiFetch<WhatIfSnapshot>("/api/whatif/snapshot");
+    },
+  });
+}
+
+export function useImpactReport(period: ReportPeriod = "7") {
+  return useQuery<Report>({
+    queryKey: ["report", period],
+    queryFn: async () => {
+      return await apiFetch<Report>(`/api/report?period=${period}`);
+    },
+  });
+}
+
+export function useSettings() {
+  return useQuery<Settings>({
+    queryKey: ["settings"],
+    queryFn: async () => {
+      return await apiFetch<Settings>("/api/settings");
+    },
+  });
+}
+
+export function useUpdateSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (patch: SettingsPatch) => {
+      return await apiFetch<Settings>("/api/settings", {
+        method: "PUT",
+        body: JSON.stringify(patch),
+      });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["settings"] });
+      void queryClient.invalidateQueries({ queryKey: ["summary"] });
+      void queryClient.invalidateQueries({ queryKey: ["anomalies"] });
+      void queryClient.invalidateQueries({ queryKey: ["whatif"] });
+      void queryClient.invalidateQueries({ queryKey: ["report"] });
+    },
+  });
+}
+
+export function useResetSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      return await apiFetch<Settings>("/api/settings", {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["settings"] });
+      void queryClient.invalidateQueries({ queryKey: ["summary"] });
+      void queryClient.invalidateQueries({ queryKey: ["anomalies"] });
+      void queryClient.invalidateQueries({ queryKey: ["whatif"] });
+      void queryClient.invalidateQueries({ queryKey: ["report"] });
+    },
+  });
+}
+
+export interface ImportCsvResponse {
+  success: boolean;
+  imported_rows: number;
+  meters: string[];
+  min_ts: string;
+  max_ts: string;
+  message: string;
+}
+
+export function useImportElectricityCsv() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (fileOrText: File | string) => {
+      let init: RequestInit;
+      if (typeof fileOrText === "string") {
+        init = {
+          method: "POST",
+          headers: { "Content-Type": "text/csv" },
+          body: fileOrText,
+        };
+      } else {
+        const data = new FormData();
+        data.append("file", fileOrText);
+        init = {
+          method: "POST",
+          // Let browser set multipart boundary
+          headers: { "X-Role": useUIStore.getState().role },
+          body: data,
+        };
+      }
+      return await apiFetch<ImportCsvResponse>("/api/electricity/import", init);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["electricity"] });
+      void queryClient.invalidateQueries({ queryKey: ["summary"] });
+      void queryClient.invalidateQueries({ queryKey: ["whatif"] });
+      void queryClient.invalidateQueries({ queryKey: ["report"] });
+      void queryClient.invalidateQueries({ queryKey: ["anomalies"] });
     },
   });
 }

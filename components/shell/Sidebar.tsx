@@ -63,12 +63,27 @@ export function Sidebar() {
           })}
         </ul>
       </nav>
-      <Link
-        href="/design"
-        className="px-3 text-caption text-ink-secondary transition-colors duration-200 hover:text-brand"
-      >
-        Design system
-      </Link>
+      <div className="flex flex-col gap-1 px-3">
+        {(role === "admin" || role === "staff") && (
+          <Link
+            href="/settings"
+            className={cn(
+              "text-caption transition-colors duration-200 hover:text-brand",
+              pathname === "/settings"
+                ? "font-semibold text-brand"
+                : "text-ink-secondary",
+            )}
+          >
+            Settings & Import
+          </Link>
+        )}
+        <Link
+          href="/design"
+          className="text-caption text-ink-secondary transition-colors duration-200 hover:text-brand"
+        >
+          Design system
+        </Link>
+      </div>
     </aside>
   );
 }
