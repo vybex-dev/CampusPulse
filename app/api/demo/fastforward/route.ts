@@ -6,7 +6,6 @@ import { advanceDays, getDemoState } from "@/lib/sim/clock";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Stub: moves the clock only. Data generation and ticket verification come later.
 export async function POST(req: Request) {
   const parsed = FastForwardBodySchema.safeParse(
     await req.json().catch(() => null),
