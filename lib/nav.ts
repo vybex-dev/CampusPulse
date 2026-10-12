@@ -17,7 +17,12 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: readonly NavItem[] = [
-  { href: "/", label: "Command Center", icon: "dashboard", roles: ["admin"] },
+  {
+    href: "/dashboard",
+    label: "Command Center",
+    icon: "dashboard",
+    roles: ["admin"],
+  },
   {
     href: "/electricity",
     label: "Electricity",
@@ -52,7 +57,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
 ];
 
 export const LANDING: Record<Role, string> = {
-  admin: "/",
+  admin: "/dashboard",
   staff: "/tickets",
   student: "/waste",
 };
@@ -62,7 +67,5 @@ export function navFor(role: Role): NavItem[] {
 }
 
 export function isActive(pathname: string, href: string): boolean {
-  return href === "/"
-    ? pathname === "/"
-    : pathname === href || pathname.startsWith(`${href}/`);
+  return pathname === href || pathname.startsWith(`${href}/`);
 }

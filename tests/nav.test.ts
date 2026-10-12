@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { LANDING, NAV_ITEMS, isActive, navFor } from "@/lib/nav";
 
 const ROUTES = [
-  "/",
+  "/dashboard",
   "/electricity",
   "/water",
   "/waste",
@@ -20,7 +20,7 @@ describe("role navigation", () => {
     expect(LANDING.staff).toBe("/tickets");
     const hrefs = navFor("staff").map((i) => i.href);
     expect(hrefs).toContain("/tickets");
-    expect(hrefs).not.toContain("/");
+    expect(hrefs).not.toContain("/dashboard");
     expect(hrefs).not.toContain("/simulator");
   });
 
@@ -34,9 +34,10 @@ describe("role navigation", () => {
     for (const href of Object.values(LANDING)) expect(ROUTES).toContain(href);
   });
 
-  it("marks the root active only on an exact match", () => {
-    expect(isActive("/", "/")).toBe(true);
-    expect(isActive("/water", "/")).toBe(false);
+  it("marks a nav item active on an exact or nested match only", () => {
+    expect(isActive("/dashboard", "/dashboard")).toBe(true);
+    expect(isActive("/water", "/dashboard")).toBe(false);
     expect(isActive("/water", "/water")).toBe(true);
+    expect(isActive("/water/x", "/water")).toBe(true);
   });
 });
