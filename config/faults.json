@@ -234,13 +234,13 @@
         "AB-B",
         "LIB"
       ],
-      "rate_per_meter_night": 0.46,
+      "rate_per_meter_night": 0.03,
       "kw_range": [
-        0.5,
-        1.1
+        0.3,
+        0.9
       ],
       "hours_range": [
-        4,
+        3,
         8
       ],
       "calibrated": true,
