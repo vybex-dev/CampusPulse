@@ -80,7 +80,7 @@ export function Leaderboard() {
                     <h4 className="truncate text-caption font-semibold text-ink">
                       {BLOCK_NAMES[entry.block]}
                     </h4>
-                    <span className="text-[11px] text-ink-secondary">
+                    <span className="text-caption text-ink-secondary">
                       {entry.checks} checks &bull; {entry.points} pts
                     </span>
                   </div>
@@ -90,7 +90,7 @@ export function Leaderboard() {
                   <div className="text-body font-semibold tabular-nums text-ink">
                     {entry.accuracy_pct !== null ? `${entry.accuracy_pct}%` : "—"}
                   </div>
-                  <span className="text-[10px] text-ink-tertiary">
+                  <span className="text-caption text-ink-tertiary">
                     {entry.accuracy_pct !== null ? "Accuracy" : "< 10 checks"}
                   </span>
                 </div>

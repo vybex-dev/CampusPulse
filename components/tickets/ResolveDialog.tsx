@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, useEffect, useRef } from "react";
 import { CheckCircle2, AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -24,6 +24,46 @@ export function ResolveDialog({
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const noteId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setError(null);
+        setNote("");
+        onClose();
+        return;
+      }
+
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -57,7 +97,10 @@ export function ResolveDialog({
       aria-labelledby="resolve-dialog-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/20 backdrop-blur-sm"
     >
-      <div className="w-full max-w-lg rounded-card bg-surface p-card shadow-drawer border border-hairline">
+      <div
+        ref={dialogRef}
+        className="w-full max-w-lg rounded-card bg-surface p-card shadow-drawer border border-hairline"
+      >
         <div className="flex items-center justify-between pb-4 border-b border-hairline">
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-control bg-sev-green/10 text-sev-green">

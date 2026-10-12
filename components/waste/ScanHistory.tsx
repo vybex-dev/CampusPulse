@@ -56,7 +56,7 @@ export function ScanHistory() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-[10px] font-mono text-ink-tertiary">
+                    <div className="flex h-full w-full items-center justify-center text-caption font-mono text-ink-tertiary">
                       IMG
                     </div>
                   )}
@@ -68,12 +68,12 @@ export function ScanHistory() {
                     <h4 className="truncate text-caption font-semibold text-ink">
                       {log.item_name}
                     </h4>
-                    <span className="font-mono text-[10px] text-ink-tertiary shrink-0">
+                    <span className="font-mono text-caption text-ink-tertiary shrink-0">
                       {log.ts.slice(11, 16)}
                     </span>
                   </div>
 
-                  <div className="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-ink-secondary">
+                  <div className="mt-0.5 flex items-center justify-between gap-2 text-caption text-ink-secondary">
                     <span className="truncate">{log.block_id} &bull; {meta.binName.split(" ")[0]}</span>
                     {log.mode === "bin_check" && (
                       <span className="flex items-center gap-0.5 shrink-0">

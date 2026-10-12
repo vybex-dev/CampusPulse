@@ -47,7 +47,7 @@ export function WhatIfGauges({ current, projected }: WhatIfGaugesProps) {
         <div className="mt-6 grid grid-cols-3 gap-3 border-t border-hairline pt-4">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-              <Zap className="h-3.5 w-3.5 text-accent-electricity" />
+              <Zap className="h-3.5 w-3.5 text-res-electricity" />
               <span>Electricity</span>
             </div>
             <span className="mt-1 text-section font-semibold text-ink tabular-nums">
@@ -57,7 +57,7 @@ export function WhatIfGauges({ current, projected }: WhatIfGaugesProps) {
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-              <Droplets className="h-3.5 w-3.5 text-accent-water" />
+              <Droplets className="h-3.5 w-3.5 text-res-water" />
               <span>Water</span>
             </div>
             <span className="mt-1 text-section font-semibold text-ink tabular-nums">
@@ -67,7 +67,7 @@ export function WhatIfGauges({ current, projected }: WhatIfGaugesProps) {
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-              <Recycle className="h-3.5 w-3.5 text-accent-waste" />
+              <Recycle className="h-3.5 w-3.5 text-res-waste" />
               <span>Waste</span>
             </div>
             <span className="mt-1 text-section font-semibold text-ink tabular-nums">
@@ -107,7 +107,7 @@ export function WhatIfGauges({ current, projected }: WhatIfGaugesProps) {
         <div className="mt-6 grid grid-cols-3 gap-3 border-t border-hairline pt-4">
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-              <Zap className="h-3.5 w-3.5 text-accent-electricity" />
+              <Zap className="h-3.5 w-3.5 text-res-electricity" />
               <span>Electricity</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">
@@ -124,7 +124,7 @@ export function WhatIfGauges({ current, projected }: WhatIfGaugesProps) {
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-              <Droplets className="h-3.5 w-3.5 text-accent-water" />
+              <Droplets className="h-3.5 w-3.5 text-res-water" />
               <span>Water</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">
@@ -141,7 +141,7 @@ export function WhatIfGauges({ current, projected }: WhatIfGaugesProps) {
 
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-              <Recycle className="h-3.5 w-3.5 text-accent-waste" />
+              <Recycle className="h-3.5 w-3.5 text-res-waste" />
               <span>Waste</span>
             </div>
             <div className="mt-1 flex items-baseline gap-1">

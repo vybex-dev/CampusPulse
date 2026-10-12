@@ -50,16 +50,16 @@ export function MessStoryCard() {
 
       <div className="rounded-control border border-hairline bg-surface p-3 text-caption flex items-center justify-between">
         <div>
-          <span className="text-ink-tertiary block text-[11px]">Est. Misrouted Weekly Mass</span>
+          <span className="text-ink-tertiary block text-caption">Est. Misrouted Weekly Mass</span>
           <strong className="text-body font-semibold text-ink">{misroutedKg} kg</strong>
         </div>
         <div className="text-right">
-          <span className="text-ink-tertiary block text-[11px]">Primary Contaminant</span>
+          <span className="text-ink-tertiary block text-caption">Primary Contaminant</span>
           <strong className="text-body font-semibold text-ink">Food Waste in Dry Bins</strong>
         </div>
       </div>
 
-      <p className="text-[12px] text-ink-secondary">
+      <p className="text-caption text-ink-secondary">
         Tip: Staff can initiate a housekeeping segregation training ticket directly from the Action Queue.
       </p>
     </Card>

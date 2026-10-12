@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Droplets, Trash2, ArrowRight } from "lucide-react";
+import { Zap, Droplets, Trash2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Pill } from "@/components/ui/Pill";
 import { TagPill } from "@/components/ui/TagPill";
@@ -42,8 +42,12 @@ export function TopWasters({ wasters = [], loading = false }: TopWastersProps) {
           ))}
         </div>
       ) : wasters.length === 0 ? (
-        <div className="py-6 text-center text-body text-ink-secondary">
-          No significant waste locations detected.
+        <div className="flex flex-col items-center justify-center py-8 text-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sev-green/10 text-sev-green">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <p className="text-body font-medium text-ink">No significant waste detected</p>
+          <p className="text-caption text-ink-secondary">All monitored zones are currently running within expected baseline limits.</p>
         </div>
       ) : (
         <div className="flex flex-col divide-y divide-hairline">

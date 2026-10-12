@@ -252,7 +252,7 @@ export default function SimulatorPage() {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between text-body">
               <label htmlFor="slider-fe" className="flex items-center gap-2 font-medium text-ink">
-                <Zap className="h-4 w-4 text-accent-electricity" />
+                <Zap className="h-4 w-4 text-res-electricity" />
                 Fix Flagged Electricity Faults (f_E)
               </label>
               <span className="font-semibold text-ink tabular-nums">{fE}%</span>
@@ -277,7 +277,7 @@ export default function SimulatorPage() {
           <div className="flex flex-col gap-2 border-t border-hairline pt-4">
             <div className="flex items-center justify-between text-body">
               <label htmlFor="slider-fw" className="flex items-center gap-2 font-medium text-ink">
-                <Droplets className="h-4 w-4 text-accent-water" />
+                <Droplets className="h-4 w-4 text-res-water" />
                 Fix Flagged Water Leaks (f_W)
               </label>
               <span className="font-semibold text-ink tabular-nums">{fW}%</span>
@@ -302,7 +302,7 @@ export default function SimulatorPage() {
           <div className="flex flex-col gap-2 border-t border-hairline pt-4">
             <div className="flex items-center justify-between text-body">
               <label htmlFor="slider-ac" className="flex items-center gap-2 font-medium text-ink">
-                <Thermometer className="h-4 w-4 text-amber-600" />
+                <Thermometer className="h-4 w-4 text-sev-amber" />
                 Campus AC Set-Point Adjustment (ΔT)
               </label>
               <span className="font-semibold text-ink tabular-nums">+{deltaAC}°C</span>
@@ -327,7 +327,7 @@ export default function SimulatorPage() {
           <div className="flex flex-col gap-2 border-t border-hairline pt-4">
             <div className="flex items-center justify-between text-body">
               <label htmlFor="slider-waste" className="flex items-center gap-2 font-medium text-ink">
-                <Recycle className="h-4 w-4 text-accent-waste" />
+                <Recycle className="h-4 w-4 text-res-waste" />
                 Target Waste Segregation Compliance (A*)
               </label>
               <span className="font-semibold text-ink tabular-nums">
@@ -383,7 +383,7 @@ export default function SimulatorPage() {
               <div className="rounded-control bg-canvas p-3.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-caption text-ink-secondary">
-                    <Leaf className="h-3.5 w-3.5 text-accent-waste" />
+                    <Leaf className="h-3.5 w-3.5 text-res-waste" />
                     <span>Carbon</span>
                   </div>
                 </div>

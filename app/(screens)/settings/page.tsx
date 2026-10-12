@@ -205,7 +205,7 @@ export default function SettingsPage() {
       {/* 2. Tariffs & Emission Factors */}
       <section className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
-          <Zap className="h-5 w-5 text-accent-electricity" />
+          <Zap className="h-5 w-5 text-res-electricity" />
           <h2 className="text-section font-semibold text-ink">
             Utility Rates & Emission Factors
           </h2>
@@ -402,7 +402,7 @@ export default function SettingsPage() {
       {/* 4. Bin Names & Colours */}
       <section className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
-          <Recycle className="h-5 w-5 text-accent-waste" />
+          <Recycle className="h-5 w-5 text-res-waste" />
           <h2 className="text-section font-semibold text-ink">
             Waste Bin Classifications & Colors
           </h2>
@@ -537,8 +537,8 @@ export default function SettingsPage() {
 
           {/* Error Callout */}
           {csvError && (
-            <div className="flex items-start gap-3 rounded-control border border-red-200 bg-red-50 p-4 text-caption text-red-900">
-              <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
+            <div className="flex items-start gap-3 rounded-control border border-sev-red/30 bg-sev-red/10 p-4 text-caption text-sev-red">
+              <AlertCircle className="h-5 w-5 shrink-0 text-sev-red" />
               <div>
                 <span className="font-semibold">CSV Validation Error:</span>
                 <p className="mt-0.5">{csvError}</p>
@@ -548,8 +548,8 @@ export default function SettingsPage() {
 
           {/* Success Callout */}
           {csvSuccess && (
-            <div className="flex items-start gap-3 rounded-control border border-emerald-200 bg-emerald-50 p-4 text-caption text-emerald-900">
-              <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
+            <div className="flex items-start gap-3 rounded-control border border-sev-green/30 bg-sev-green/10 p-4 text-caption text-sev-green">
+              <CheckCircle2 className="h-5 w-5 shrink-0 text-sev-green" />
               <div>
                 <span className="font-semibold">Import Complete:</span>
                 <p className="mt-0.5">{csvSuccess}</p>

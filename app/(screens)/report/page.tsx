@@ -86,7 +86,7 @@ export default function ImpactReportPage() {
           <div className="grid grid-cols-3 gap-2 border-t border-hairline pt-3">
             <div>
               <div className="flex items-center gap-1 text-caption text-ink-secondary">
-                <Zap className="h-3 w-3 text-accent-electricity" />
+                <Zap className="h-3 w-3 text-res-electricity" />
                 <span>Elec</span>
               </div>
               <span className="text-body font-semibold text-ink tabular-nums">
@@ -95,7 +95,7 @@ export default function ImpactReportPage() {
             </div>
             <div>
               <div className="flex items-center gap-1 text-caption text-ink-secondary">
-                <Droplets className="h-3 w-3 text-accent-water" />
+                <Droplets className="h-3 w-3 text-res-water" />
                 <span>Water</span>
               </div>
               <span className="text-body font-semibold text-ink tabular-nums">
@@ -104,7 +104,7 @@ export default function ImpactReportPage() {
             </div>
             <div>
               <div className="flex items-center gap-1 text-caption text-ink-secondary">
-                <Recycle className="h-3 w-3 text-accent-waste" />
+                <Recycle className="h-3 w-3 text-res-waste" />
                 <span>Waste</span>
               </div>
               <span className="text-body font-semibold text-ink tabular-nums">
@@ -241,7 +241,7 @@ export default function ImpactReportPage() {
           {/* Electricity */}
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-violet-50 text-accent-electricity">
+              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-res-electricity/10 text-res-electricity">
                 <Zap className="h-5 w-5" />
               </span>
               <div>
@@ -265,7 +265,7 @@ export default function ImpactReportPage() {
           {/* Water */}
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-sky-50 text-accent-water">
+              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-res-water/10 text-res-water">
                 <Droplets className="h-5 w-5" />
               </span>
               <div>
@@ -289,7 +289,7 @@ export default function ImpactReportPage() {
           {/* Waste */}
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-lime-50 text-accent-waste">
+              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-res-waste/10 text-res-waste">
                 <Recycle className="h-5 w-5" />
               </span>
               <div>

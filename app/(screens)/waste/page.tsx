@@ -301,7 +301,7 @@ export default function WasteLabPage() {
               </div>
 
               {/* Privacy Notice */}
-              <div className="flex items-center gap-1.5 text-[11px] text-ink-tertiary">
+              <div className="flex items-center gap-1.5 text-caption text-ink-tertiary">
                 <Lock className="h-3 w-3" />
                 <span>Photograph the item only. Never store personal data.</span>
               </div>
@@ -317,7 +317,7 @@ export default function WasteLabPage() {
                   {(
                     [
                       { id: "green", label: "Green (wet)", cls: "border-sev-green text-sev-green" },
-                      { id: "blue", label: "Blue (dry)", cls: "border-sky-500 text-sky-600" },
+                      { id: "blue", label: "Blue (dry)", cls: "border-res-water text-res-water" },
                       { id: "red", label: "Red (special)", cls: "border-sev-red text-sev-red" },
                       { id: "black", label: "Black (residual)", cls: "border-ink text-ink" },
                     ] as const
@@ -460,7 +460,7 @@ export default function WasteLabPage() {
                         <span className="text-caption font-semibold text-ink block truncate">
                           {meta.name.split("/")[0]}
                         </span>
-                        <span className="text-[11px] text-ink-tertiary">
+                        <span className="text-caption text-ink-tertiary">
                           {meta.binName.split(" ")[0]}
                         </span>
                       </button>

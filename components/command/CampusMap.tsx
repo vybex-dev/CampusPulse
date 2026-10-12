@@ -211,7 +211,7 @@ export function CampusMap({ blockSeverity, anomalies }: CampusMapProps) {
                     setSelectedBlock(b.code);
                   }
                 }}
-                className="cursor-pointer transition-transform duration-150 focus:outline-none"
+                className="cursor-pointer transition-transform duration-150 outline-none focus-visible:[&>rect:first-child]:stroke-brand focus-visible:[&>rect:first-child]:stroke-[3.5]"
               >
                 {/* Block Card Background */}
                 <rect

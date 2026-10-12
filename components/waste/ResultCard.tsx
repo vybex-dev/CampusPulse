@@ -31,7 +31,7 @@ interface ResultCardProps {
 
 const BIN_COLORS: Record<Bin, { bg: string; text: string; dot: string; label: string }> = {
   green: { bg: "bg-sev-green/10", text: "text-sev-green", dot: "bg-sev-green", label: "Green (wet)" },
-  blue: { bg: "bg-sky-500/10", text: "text-sky-600", dot: "bg-sky-500", label: "Blue (dry recyclable)" },
+  blue: { bg: "bg-res-water/10", text: "text-res-water", dot: "bg-res-water", label: "Blue (dry recyclable)" },
   red: { bg: "bg-sev-red/10", text: "text-sev-red", dot: "bg-sev-red", label: "Red (special collection)" },
   black: { bg: "bg-ink/10", text: "text-ink", dot: "bg-ink", label: "Black (residual)" },
 };
@@ -155,7 +155,7 @@ export function ResultCard({
         <div className="flex items-center gap-2 text-caption">
           <Leaf className="h-4 w-4 text-res-waste" />
           <div>
-            <span className="text-ink-tertiary block text-[11px]">CO₂e Avoided</span>
+            <span className="text-ink-tertiary block text-caption">CO₂e Avoided</span>
             <span className="font-semibold text-ink tabular-nums">
               {(meta.weight_kg * meta.ef_kg_per_kg).toFixed(2)} kg CO₂e
             </span>
@@ -165,7 +165,7 @@ export function ResultCard({
         <div className="flex items-center gap-2 text-caption">
           <Award className="h-4 w-4 text-sev-amber" />
           <div>
-            <span className="text-ink-tertiary block text-[11px]">Gamification Points</span>
+            <span className="text-ink-tertiary block text-caption">Gamification Points</span>
             <span className="font-semibold text-ink tabular-nums">
               {meta.points} pts
             </span>
