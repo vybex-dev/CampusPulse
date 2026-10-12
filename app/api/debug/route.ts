@@ -110,6 +110,23 @@ export async function GET(req: Request) {
   if (step === "route") {
     const name = params.get("name") ?? "";
     const started = Date.now();
+    // Handlers swallow errors and return a generic message; capture what they log.
+    const logs: string[] = [];
+    const origError = console.error;
+    const origWarn = console.warn;
+    const capture =
+      (orig: typeof console.error) =>
+      (...args: unknown[]) => {
+        logs.push(
+          args
+            .map((a) => (a instanceof Error ? errText(a) : String(a)))
+            .join(" ")
+            .slice(0, 2500),
+        );
+        orig(...args);
+      };
+    console.error = capture(origError);
+    console.warn = capture(origWarn);
     try {
       const { handler, url } = await loadHandler(name);
       out.loadedMs = Date.now() - started;
@@ -121,7 +138,11 @@ export async function GET(req: Request) {
       out.body = (await res.text()).slice(0, 1500);
     } catch (e) {
       out.thrown = errText(e);
+    } finally {
+      console.error = origError;
+      console.warn = origWarn;
     }
+    out.consoleLogs = logs.slice(0, 10);
     out.totalMs = Date.now() - started;
     out.memoryMB = Math.round(process.memoryUsage().rss / 1048576);
   }
