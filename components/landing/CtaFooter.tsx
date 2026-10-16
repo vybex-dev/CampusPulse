@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Activity, ArrowRight } from "lucide-react";
+import { PoweredByVybex } from "@/components/ui/PoweredByVybex";
 import { Reveal } from "./Reveal";
 
 const SCREENS = [
@@ -77,9 +78,28 @@ export function LandingFooter() {
         </nav>
       </div>
       <div className="border-t border-hairline">
-        <p className="mx-auto max-w-content px-6 py-5 text-caption text-ink-tertiary md:px-page">
-          The demo campus is fictional. All telemetry shown is deterministic simulated data.
-        </p>
+        <div className="mx-auto flex max-w-content flex-col gap-3 px-6 py-5 text-caption text-ink-tertiary md:flex-row md:items-center md:justify-between md:px-page">
+          <div className="flex flex-col gap-1">
+            <p>
+              © {new Date().getFullYear()} CampusPulse.
+              Released under the{" "}
+              <a
+                href="https://opensource.org/license/mit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 transition-colors hover:text-ink-secondary"
+              >
+                MIT License
+              </a>
+              .
+            </p>
+            <p>
+              The demo campus is fictional. All telemetry shown is deterministic simulated data.
+              Product and company names mentioned remain the property of their respective owners.
+            </p>
+          </div>
+          <PoweredByVybex />
+        </div>
       </div>
     </footer>
   );

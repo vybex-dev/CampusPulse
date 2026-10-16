@@ -151,3 +151,11 @@ Per Kaushal 8.0 rules and responsible engineering practices:
 | **Both API Keys Blank** | Server boots in zero-network mode; Waste Lab uses prepared sample tray. | Click any item in the sample tray during Waste Lab demonstration. |
 | **Camera Access Denied** | WebRTC video failure opens file picker and sample item carousel. | Click one of the 7 sample badges on screen. |
 | **Database Corruption / Reset** | Header contains 1-click **Reset** pill executing in `<160ms`. | Click **Reset** in top-right header to restore PRNG seed 42 state. |
+
+---
+
+## 📄 License
+
+Released under the [MIT License](./LICENSE). © 2026 CampusPulse Contributors.
+
+Powered by [VYBEX](https://vybex-dev.vercel.app).

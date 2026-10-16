@@ -6,6 +6,7 @@ import { Activity } from "lucide-react";
 import type { ReactNode } from "react";
 import { LANDING } from "@/lib/nav";
 import { useUIStore } from "@/lib/store";
+import { AppFooter } from "./AppFooter";
 import { DemoControlStrip } from "./DemoControlStrip";
 import { RoleSwitcher } from "./RoleSwitcher";
 import { SampleModeBanner } from "./SampleModeBanner";
@@ -61,6 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           {children}
         </div>
+        <AppFooter />
       </main>
     </div>
   );
